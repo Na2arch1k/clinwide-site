@@ -1,0 +1,47 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+  min-height: 100%;
+}
+body {
+  font-family: var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #faf9f6;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), sans-serif;
+  text-wrap: balance;
+}
+a {
+  color: inherit;
+}
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+button {
+  border: 0;
+}
+svg {
+  display: block;
+}
+::selection {
+  color: #243c35;
+  background: #d7e5c8;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
