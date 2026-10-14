@@ -7,11 +7,9 @@ import {
   ArrowUpRight,
   CalendarDays,
   Check,
-  ChevronRight,
   ClipboardList,
   Heart,
   Layers3,
-  LockKeyhole,
   Monitor,
   MonitorSmartphone,
   Sparkles,
@@ -80,7 +78,44 @@ const capabilities = [
   },
 ];
 
+const customConfiguration = [
+  {
+    icon: Users,
+    title: "Ролі команди",
+    text: "Власник, рецепція, лікарі й асистенти бачать саме те, що потрібно їм.",
+  },
+  {
+    icon: CalendarDays,
+    title: "Розклад і кабінети",
+    text: "Налаштовуємо графіки, тривалість прийомів, крісла та статуси запису.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Етапи лікування",
+    text: "Поля картки й послідовність роботи відповідають процесу вашої клініки.",
+  },
+  {
+    icon: Layers3,
+    title: "Документи й дані",
+    text: "Залишаємо потрібні шаблони, файли та структуру історії пацієнта.",
+  },
+  {
+    icon: WalletCards,
+    title: "Фінанси та звіти",
+    text: "Показники, оплати й зрізи формуємо навколо ваших управлінських задач.",
+  },
+  {
+    icon: Sparkles,
+    title: "Додаткові сценарії",
+    text: "Інтеграції, нагадування й нові можливості погоджуємо окремо до старту.",
+  },
+];
+
 const questions = [
+  [
+    "Як отримати доступ до демо Clinwide?",
+    "Напишіть мені в Telegram — я особисто надішлю посилання на демо Clinwide й поясню, як його переглянути. На цій сторінці показано лише ілюстративний огляд інтерфейсу, а не робочу демоверсію.",
+  ],
   [
     "Для яких клінік підходить система?",
     "Для стоматологічного кабінету або команди клініки, які хочуть об’єднати розклад, роботу з пацієнтами та облік. На демонстрації перевіримо ваші щоденні сценарії й визначимо потрібний склад впровадження.",
@@ -107,7 +142,7 @@ const questions = [
   ],
   [
     "Скільки коштує впровадження?",
-    "Зараз базове рішення Clinwide коштує $300 за акційною ціною (звичайна — $450) — разовий платіж, без щомісячної підписки автору. Склад впровадження та умови приймання фіксуємо до старту.",
+    `Зараз базове рішення Clinwide коштує $${productOffer.priceUsd} за спеціальною ціною (звичайна — $${productOffer.compareAtUsd}) — разовий платіж, без щомісячної підписки автору. Склад впровадження та умови приймання фіксуємо до старту.`,
   ],
   [
     "Чи потрібно щось оплачувати щомісяця?",
@@ -152,7 +187,6 @@ function BrandMark() {
 export default function ProductPage() {
   const contactUrl = publicContactUrl(productSite.contactUrl);
   const portfolioUrl = publicWebsiteUrl(productSite.portfolioUrl);
-  const demoUrl = publicWebsiteUrl(productSite.demoUrl);
   return (
     <div className={s.site}>
       <ScrollEffects />
@@ -175,14 +209,10 @@ export default function ProductPage() {
           <nav className={s.navigation} aria-label="Про продукт">
             <a href="#overview">Можливості</a>
             <a href="#preview">Інтерфейс</a>
+            <a href="#custom">Під вашу клініку</a>
             <a href="#pricing">Вартість</a>
           </nav>
           <div className={s.headerActions}>
-            {demoUrl && (
-              <a href={demoUrl} className={s.loginLink}>
-                Відкрити систему <ArrowUpRight size={14} />
-              </a>
-            )}
             <a className={s.smallButton} href="#contact">
               Обговорити проєкт <ArrowUpRight size={16} />
             </a>
@@ -222,6 +252,7 @@ export default function ProductPage() {
                 <span className={s.heroLineOne}>Злагоджена клініка.</span>
                 <span className={s.heroLineTwo}>
                   Спокійний
+                  {" "}
                   <br />
                   робочий день.
                 </span>
@@ -231,8 +262,8 @@ export default function ProductPage() {
                 style={revealDelay(140)}
               >
                 {BRAND.name} об’єднує розклад, пацієнтів, лікування й фінанси.
-                Щоб команда мала спільну картину, а ви — більше часу для
-                головного.
+                Індивідуально налаштовуємо систему під процеси вашої клініки,
+                щоб команда працювала злагоджено.
               </p>
               <div
                 className={`${s.heroActions} ${s.reveal} ${s.up}`}
@@ -242,7 +273,7 @@ export default function ProductPage() {
                   Подивитися систему <ArrowRight size={18} />
                 </a>
                 <a className={s.textButton} href="#pricing">
-                  Порівняти витрати <ArrowDown size={16} />
+                  Вартість впровадження <ArrowDown size={16} />
                 </a>
               </div>
               <p className={s.heroNote}>
@@ -481,52 +512,80 @@ export default function ProductPage() {
           </div>
         </section>
 
-        <section className={s.fitSection} aria-labelledby="fit-title">
-          <div className={`${s.sectionShell} ${s.fitGrid}`}>
-            <div className={`${s.reveal} ${s.left}`}>
-              <span className={s.lightEyebrow}>
-                <Sparkles size={15} /> ВЛАСНИЙ ПРОДУКТ. ПРЯМИЙ ДІАЛОГ.
-              </span>
-              <h2 id="fit-title">
-                Починаємо з того,
-                <br />
-                як працює ваша клініка.
-              </h2>
-              <p>
-                Показуємо готову систему на ваших сценаріях. Потім погоджуємо
-                налаштування, склад впровадження та умови підтримки — ще до
-                старту роботи.
-              </p>
-              <a href="#contact" className={s.lightButton}>
-                Обговорити впровадження <ArrowUpRight size={18} />
-              </a>
+        <section
+          id="custom"
+          className={s.customSection}
+          aria-labelledby="custom-title"
+        >
+          <div className={s.sectionShell}>
+            <div className={s.customGrid}>
+              <div className={`${s.customIntro} ${s.reveal} ${s.left}`}>
+                <p className={s.eyebrow}>НЕ ШАБЛОННЕ ВПРОВАДЖЕННЯ</p>
+                <h2 id="custom-title">
+                  Clinwide налаштовується
+                  <br />
+                  індивідуально під вас.
+                </h2>
+                <p>
+                  Базова система вже готова, але кожна клініка отримує власну
+                  конфігурацію. Разом визначаємо ролі, робочі етапи, поля,
+                  документи та звіти — щоб команда працювала у звичній логіці,
+                  а не підлаштовувалася під чужий шаблон.
+                </p>
+                <div className={s.customPromise}>
+                  <Check size={17} />
+                  <span>
+                    Склад вашої версії фіксуємо до початку налаштування
+                  </span>
+                </div>
+                <a href="#contact" className={s.textButton}>
+                  Зібрати свою версію <ArrowUpRight size={18} />
+                </a>
+              </div>
+
+              <div
+                className={`${s.customStage} ${s.reveal} ${s.zoom}`}
+                style={revealDelay(100)}
+                aria-label="Що можна налаштувати індивідуально"
+              >
+                <div className={s.customCore}>
+                  <span>CLINWIDE / YOUR EDITION</span>
+                  <strong>Під вашу клініку</strong>
+                  <small>Одна основа · власна конфігурація</small>
+                </div>
+                {customConfiguration.map(({ icon: Icon, title, text }, index) => (
+                  <article
+                    key={title}
+                    className={s.customNode}
+                    data-custom-index={index + 1}
+                  >
+                    <Icon size={18} />
+                    <div>
+                      <h3>{title}</h3>
+                      <p>{text}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
-            <div className={s.fitChecklist}>
+
+            <div className={s.customSteps}>
               {[
-                [
-                  "Зрозумілий склад рішення",
-                  "Фіксуємо, які можливості та налаштування входять у вашу пропозицію.",
-                ],
-                [
-                  "Доступ відповідно до ролі",
-                  "Погоджуємо роботу власника, лікаря, рецепції та асистента.",
-                ],
-                [
-                  "Разова оплата базового рішення",
-                  "Без щомісячної підписки автору. Зовнішні сервіси — у межах безкоштовних тарифів.",
-                ],
-              ].map(([heading, text], index) => (
-                <div
-                  key={heading}
-                  className={`${s.reveal} ${s.right}`}
-                  style={revealDelay(index * 100)}
+                ["01", "Розбираємо процес", "Дивимося, як команда працює зараз."],
+                ["02", "Збираємо конфігурацію", "Погоджуємо ролі, поля й сценарії."],
+                ["03", "Передаємо команді", "Налаштовуємо доступ і показуємо роботу."],
+              ].map(([number, heading, text], index) => (
+                <article
+                  key={number}
+                  className={`${s.reveal} ${s.up}`}
+                  style={revealDelay(index * 90)}
                 >
-                  <Check size={20} />
+                  <span>{number}</span>
                   <div>
                     <h3>{heading}</h3>
                     <p>{text}</p>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </div>
@@ -544,17 +603,16 @@ export default function ProductPage() {
                 04
               </span>
               <div>
-                <p className={s.eyebrow}>ВАРТІСТЬ, ЯКУ ЛЕГКО ЗІСТАВИТИ</p>
+                <p className={s.eyebrow}>ПРОЗОРІ УМОВИ ВПРОВАДЖЕННЯ</p>
                 <h2 id="pricing-title">
-                  Дивіться на витрати
+                  Ваша система.
                   <br />
-                  за весь період.
+                  Одна оплата.
                 </h2>
               </div>
               <p className={s.sectionLede}>
-                Підписка та індивідуальне впровадження мають різні умови.
-                Порівнюйте бюджет разом із потрібними можливостями та
-                підтримкою.
+                Базове рішення з узгодженим налаштуванням для вашої команди.
+                Склад робіт і умови підтримки фіксуємо до старту.
               </p>
             </header>
             <div className={s.priceCards}>
@@ -562,20 +620,21 @@ export default function ProductPage() {
                 className={`${s.priceCard} ${s.ownPrice} ${s.reveal} ${s.up}`}
               >
                 <span className={s.priceLabel}>
-                  <span className={s.saleBadge}>АКЦІЯ</span> РАЗОВА ОПЛАТА
+                  <span className={s.saleBadge}>СПЕЦІАЛЬНА ЦІНА</span>
+                  РАЗОВА ОПЛАТА
                 </span>
                 <h3>{BRAND.name}</h3>
                 <p className={s.priceValue}>
-                  <s className={s.priceWas}>${productOffer.compareAtUsd}</s> $
-                  {productOffer.priceUsd} <small>/ разово</small>
+                  <span>${productOffer.priceUsd}</span>
+                  <s className={s.priceWas}>${productOffer.compareAtUsd}</s>
+                  <small>разово</small>
                 </p>
                 <p>
-                  Фіксована ціна базового рішення. Без щомісячної підписки
-                  автору.
+                  Готова основа. Індивідуальна конфігурація для вашої клініки.
                 </p>
                 <ul>
                   <li>
-                    <Check size={16} /> Без щомісячної підписки автору
+                    <Check size={16} /> Ролі й робочі сценарії вашої команди
                   </li>
                   <li>
                     <Check size={16} /> Виправлення багів у межах підтримки
@@ -681,77 +740,6 @@ export default function ProductPage() {
           </div>
         </section>
 
-        <section className={s.section} aria-labelledby="story-title">
-          <div className={`${s.sectionShell} ${s.projectStory}`}>
-            <div className={`${s.reveal} ${s.left}`}>
-              <p className={s.eyebrow}>ЗА ПРОДУКТОМ — РЕАЛЬНА РОБОТА</p>
-              <h2 id="story-title">
-                Система, з якої
-                <br />
-                почався власний продукт.
-              </h2>
-              <p>
-                Проєкт пройшов шлях від розробки до першого продажу. Ця
-                презентація показує його можливості та допомагає обговорити
-                наступне впровадження.
-              </p>
-              {portfolioUrl && (
-                <a
-                  className={s.textButton}
-                  href={portfolioUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Переглянути портфоліо автора <ArrowUpRight size={17} />
-                </a>
-              )}
-            </div>
-            <div
-              className={`${s.storyCard} ${s.reveal} ${s.right}`}
-              style={revealDelay(120)}
-            >
-              <span className={s.iconTile}>
-                <LockKeyhole size={24} />
-              </span>
-              <h3>Покажемо те, що важливо вам</h3>
-              <p>
-                На демонстрації пройдемо ваш робочий день: запис, картку
-                пацієнта, лікування та оплату. Ви зможете оцінити систему до
-                рішення про придбання.
-              </p>
-              <a href="#preview">
-                Повернутися до прикладів <ChevronRight size={17} />
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className={s.section}
-          aria-label="Місця для майбутніх матеріалів"
-        >
-          <div className={`${s.sectionShell} ${s.futureContent}`}>
-            <article className={`${s.reveal} ${s.left}`}>
-              <span className={s.priceLabel}>
-                ПОРТФОЛІО · МАТЕРІАЛИ ГОТУЮТЬСЯ
-              </span>
-              <h3>Приклади впроваджень</h3>
-              <p>
-                Тут з’являться опис клініки, її запит і приклади налаштування
-                системи.
-              </p>
-            </article>
-            <article className={`${s.reveal} ${s.right}`}>
-              <span className={s.priceLabel}>ВІДГУКИ · МАТЕРІАЛИ ГОТУЮТЬСЯ</span>
-              <h3>Досвід клієнтів</h3>
-              <p>
-                Місце для справжнього відгуку та історії роботи з Clinwide після
-                погодження публікації.
-              </p>
-            </article>
-          </div>
-        </section>
-
         <section
           id="faq"
           className={s.section}
@@ -798,8 +786,9 @@ export default function ProductPage() {
                 це працюватиме у вас.
               </h2>
               <p>
-                Оберіть розмір команди й основний запит. Це допоможе підготувати
-                змістовну демонстрацію та розрахунок.
+                Щоб переглянути демо Clinwide, напишіть мені — я надішлю
+                посилання. Можете одразу вказати розмір команди й основний
+                запит, щоб я підготував демонстрацію під ваші задачі.
               </p>
               <div className={s.contactHint}>
                 <Check size={16} /> Без введення даних ваших пацієнтів
@@ -822,8 +811,9 @@ export default function ProductPage() {
           </a>
           <p>Більше уваги пацієнтам. Менше рутини.</p>
           <div>
-            <a href={demoUrl || "#preview"}>
-              {demoUrl ? "Відкрити систему" : "Переглянути інтерфейс"}{" "}
+            {portfolioUrl && <a href={portfolioUrl} target="_blank" rel="noreferrer">Портфоліо автора <ArrowUpRight size={14} /></a>}
+            <a href="#contact">
+              Запросити демо{" "}
               <ArrowUpRight size={14} />
             </a>
             <span>© 2026 {BRAND.name}</span>

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans, PT_Sans } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
 import { BRAND } from "@/lib/brand";
 import { publicWebsiteUrl } from "@/lib/product-site";
 import "./globals.css";
@@ -7,12 +7,7 @@ import "./globals.css";
 const notoSans = Noto_Sans({
   variable: "--font-sans",
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600"],
-});
-const ptSans = PT_Sans({
-  variable: "--font-heading",
-  subsets: ["latin", "cyrillic"],
-  weight: ["700"],
+  weight: ["400", "500", "600", "700"],
 });
 const siteUrl = publicWebsiteUrl(process.env.NEXT_PUBLIC_SITE_URL || "");
 
@@ -35,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="uk" className={`${notoSans.variable} ${ptSans.variable}`}>
+    <html lang="uk" className={notoSans.variable}>
       <body>{children}</body>
     </html>
   );

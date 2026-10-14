@@ -2,8 +2,8 @@ import { BRAND } from "@/lib/brand";
 
 export const productSite = {
   name: BRAND.name,
-  // Owner-supplied contacts only. The presentation remains usable without one.
-  contactUrl: process.env.NEXT_PUBLIC_PRODUCT_CONTACT_URL || "",
+  // Public business contact, shared with the author's portfolio.
+  contactUrl: process.env.NEXT_PUBLIC_PRODUCT_CONTACT_URL || "https://t.me/nazar_m0p",
   portfolioUrl: process.env.NEXT_PUBLIC_PRODUCT_PORTFOLIO_URL || "",
   demoUrl: process.env.NEXT_PUBLIC_DEMO_URL || "",
   pricingReviewed: "01.10.2026",

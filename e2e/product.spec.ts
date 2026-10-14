@@ -10,6 +10,11 @@ test("presentation renders, images load, and each preview fits the viewport", as
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Злагоджена клініка",
   );
+  expect(
+    await page.getByRole("heading", { level: 1 }).evaluate(
+      (heading) => heading.scrollWidth <= heading.clientWidth,
+    ),
+  ).toBe(true);
   const heroImage = page.locator("figure img");
   await expect(heroImage).toBeVisible();
   await expect
@@ -95,7 +100,7 @@ test("request builder preserves an accurate manually copyable message when clipb
   ).toBeEnabled();
 });
 
-test("FAQ, source links, placeholders and narrow screen remain usable", async ({
+test("FAQ, source links, customization and narrow screen remain usable", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 740 });
@@ -122,8 +127,9 @@ test("FAQ, source links, placeholders and narrow screen remain usable", async ({
     page.getByRole("link", { name: "Офіційні тарифи" }),
   ).toHaveAttribute("href", "https://iclinic.ua/");
   await expect(
-    page.getByRole("heading", { name: "Досвід клієнтів" }),
+    page.getByRole("heading", { name: "Clinwide налаштовується індивідуально під вас." }),
   ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Написати щодо демо" })).toHaveAttribute("href", "https://t.me/nazar_m0p");
   expect(
     await page.evaluate(
       () =>

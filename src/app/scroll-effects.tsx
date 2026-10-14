@@ -9,11 +9,16 @@ export function ScrollEffects() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    const cleanups: Array<() => void> = [];
+    const site = document.querySelector<HTMLElement>(`.${s.site}`);
+
     // --- Directional scroll reveal ("gliding" between sections) ---
     const revealItems = document.querySelectorAll(`.${s.reveal}`);
     if (reduceMotion) {
       revealItems.forEach((el) => el.classList.add(s.revealVisible));
     } else if (revealItems.length) {
+      site?.setAttribute("data-motion-ready", "");
+      cleanups.push(() => site?.removeAttribute("data-motion-ready"));
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -26,13 +31,13 @@ export function ScrollEffects() {
         { threshold: 0.1, rootMargin: "0px 0px -8% 0px" },
       );
       revealItems.forEach((el) => observer.observe(el));
+      cleanups.push(() => observer.disconnect());
     }
 
     // --- Wayfinding rail: track the section currently in view ---
     const railLinks = Array.from(
       document.querySelectorAll<HTMLAnchorElement>("[data-rail]"),
     );
-    const cleanups: Array<() => void> = [];
     if (railLinks.length) {
       const byId = new Map<string, HTMLAnchorElement>();
       const targets: HTMLElement[] = [];
@@ -68,31 +73,70 @@ export function ScrollEffects() {
       cleanups.push(() => railObserver.disconnect());
     }
 
-    // --- Header shadow + scroll-progress variable (rAF throttled) ---
+    // --- Scroll progress for restrained, component-level parallax ---
     const header = document.querySelector(`[data-header]`);
     const progressRoot = document.querySelector<HTMLElement>("[data-progress]");
-    let ticking = false;
+    const scenes = Array.from(
+      document.querySelectorAll<HTMLElement>("main > section"),
+    );
+    scenes.forEach((scene, index) => {
+      scene.dataset.cinematic = "";
+      scene.style.setProperty("--scene-index", String(index));
+    });
+
+    let frame = 0;
+    const clamp = (value: number, min = 0, max = 1) =>
+      Math.min(max, Math.max(min, value));
+
     const update = () => {
-      ticking = false;
-      if (header) header.classList.toggle(s.headerScrolled, window.scrollY > 8);
+      frame = 0;
+      const scrollY = window.scrollY;
+
+      if (header) header.classList.toggle(s.headerScrolled, scrollY > 8);
       if (progressRoot) {
         const doc = document.documentElement;
         const max = doc.scrollHeight - doc.clientHeight;
-        const ratio = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+        const ratio = max > 0 ? Math.min(1, scrollY / max) : 0;
         progressRoot.style.setProperty("--progress", ratio.toFixed(4));
+        site?.style.setProperty("--page-progress", ratio.toFixed(4));
+      }
+
+      if (!reduceMotion) {
+        const viewportHeight = window.innerHeight;
+
+        scenes.forEach((scene) => {
+          const rect = scene.getBoundingClientRect();
+          const progress = clamp(
+            (viewportHeight - rect.top) / (viewportHeight + rect.height),
+          );
+          const distance = clamp(
+            (rect.top + rect.height / 2 - viewportHeight / 2) /
+              viewportHeight,
+            -1.25,
+            1.25,
+          );
+          const visibility = clamp(1 - Math.abs(distance) * 0.72);
+          scene.style.setProperty("--scene-progress", progress.toFixed(4));
+          scene.style.setProperty("--scene-distance", distance.toFixed(4));
+          scene.style.setProperty("--scene-visibility", visibility.toFixed(4));
+          scene.toggleAttribute(
+            "data-cinematic-active",
+            rect.bottom > 0 && rect.top < viewportHeight,
+          );
+        });
       }
     };
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(update);
     };
     update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
     cleanups.push(() => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frame) cancelAnimationFrame(frame);
     });
 
     return () => cleanups.forEach((fn) => fn());

@@ -2,14 +2,15 @@
    Clinwide — editorial redesign
    Palette stays calm green/cream. Distinctive moves: a left wayfinding
    rail, oversized ghost section numerals, an asymmetric editorial grid,
-   directional scroll-reveal ("gliding" between sections) and a cinematic
-   dark spotlight for the product demo.
+   restrained scroll-reveal and a cinematic dark spotlight for the product
+   demo. Motion lives inside visual layers; reading surfaces stay stable.
    ===================================================================== */
 
 .site {
   --foreground: #243c35;
   --ink: #1b2e26;
-  --muted-foreground: #64736a;
+  --muted-foreground: #58675e;
+  --font-heading: var(--font-sans);
   --background: #faf9f6;
   --cream: #faf9f6;
   --cream-2: #f3f1e9;
@@ -52,19 +53,20 @@
 .site main {
   overflow-x: clip;
 }
-.site h1,
-.site h2,
-.site h3,
-.site h4,
-.site p,
-.site figure,
-.site ul,
-.site ol {
+:where(.site) h1,
+:where(.site) h2,
+:where(.site) h3,
+:where(.site) h4,
+:where(.site) p,
+:where(.site) figure,
+:where(.site) ul,
+:where(.site) ol {
   margin: 0;
 }
 .site h2 {
-  font-size: clamp(31px, 3.6vw, 50px);
-  line-height: 1.08;
+  font-size: clamp(30px, 3.3vw, 46px);
+  font-weight: 600;
+  line-height: 1.16;
   letter-spacing: -0.04em;
 }
 .site h3 {
@@ -96,80 +98,32 @@
 
 /* --- directional scroll reveal ("gliding" between sections) --- */
 .reveal {
-  opacity: 0;
+  opacity: 1;
   transition:
-    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--reveal-delay, 0s);
   will-change: opacity, transform;
 }
-.up {
-  transform: translate3d(0, 38px, 0);
+.site[data-motion-ready] .reveal:not(.revealVisible) {
+  opacity: 0;
 }
-.left {
-  transform: translate3d(-48px, 0, 0);
+.site[data-motion-ready] .up:not(.revealVisible) {
+  transform: translate3d(0, 24px, 0);
 }
-.right {
-  transform: translate3d(48px, 0, 0);
+.site[data-motion-ready] .left:not(.revealVisible) {
+  transform: translate3d(-28px, 0, 0);
 }
-.zoom {
-  transform: scale(0.93) translate3d(0, 28px, 0);
+.site[data-motion-ready] .right:not(.revealVisible) {
+  transform: translate3d(28px, 0, 0);
+}
+.site[data-motion-ready] .zoom:not(.revealVisible) {
+  transform: scale(0.975) translate3d(0, 18px, 0);
   transform-origin: center 65%;
 }
 .revealVisible {
   opacity: 1;
   transform: none;
-}
-
-/* --- native scroll-driven flourishes (progressive enhancement) --- */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .sectionNum {
-      animation: numDrift linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 55%;
-    }
-    @keyframes numDrift {
-      from {
-        transform: translateY(46px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(-14px);
-        opacity: 1;
-      }
-    }
-    .previewLayout {
-      perspective: 1700px;
-    }
-    .browserFrame {
-      animation: frameStraighten linear both;
-      animation-timeline: view();
-      animation-range: entry 6% cover 48%;
-      transform-origin: center 82%;
-    }
-    @keyframes frameStraighten {
-      from {
-        transform: rotateX(8deg) translateY(26px) scale(0.975);
-      }
-      to {
-        transform: rotateX(0deg) translateY(0) scale(1);
-      }
-    }
-    .heroArc {
-      animation: arcDrift linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 100%;
-    }
-    @keyframes arcDrift {
-      from {
-        transform: translateY(-26px) rotate(-4deg);
-      }
-      to {
-        transform: translateY(26px) rotate(4deg);
-      }
-    }
-  }
 }
 
 /* --- shell / layout --- */
@@ -235,7 +189,7 @@
 .navigation {
   display: flex;
   gap: 30px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
 }
 .navigation a {
@@ -287,7 +241,7 @@
   z-index: 35;
   display: none;
 }
-@media (min-width: 1280px) {
+@media (min-width: 1500px) {
   .rail {
     display: block;
   }
@@ -498,14 +452,15 @@
   align-items: center;
 }
 .heroCopy {
+  min-width: 0;
   padding: 12px 0;
 }
 .hero h1 {
-  font-size: clamp(45px, 6.1vw, 86px);
-  line-height: 0.98;
+  font-size: clamp(44px, 5.1vw, 70px);
+  line-height: 1.08;
   letter-spacing: -0.05em;
   margin: clamp(18px, 2.6vw, 30px) 0 24px;
-  font-weight: 700;
+  font-weight: 600;
 }
 .heroLineOne {
   display: block;
@@ -537,6 +492,7 @@
   margin-top: 22px;
 }
 .heroVisual {
+  min-width: 0;
   position: relative;
   isolation: isolate;
 }
@@ -555,7 +511,7 @@
 .heroFrame {
   position: relative;
   height: clamp(350px, 44vw, 520px);
-  border-radius: 150px 22px 22px 22px;
+  border-radius: 120px 20px 20px 20px;
   background: #e9e0d0;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
@@ -668,7 +624,7 @@
 .sectionNum {
   grid-row: 1;
   font-family: var(--font-heading), sans-serif;
-  font-size: clamp(54px, 8vw, 104px);
+  font-size: clamp(48px, 6vw, 80px);
   font-weight: 700;
   line-height: 0.8;
   letter-spacing: -0.06em;
@@ -903,11 +859,18 @@
   scrollbar-width: thin;
   scrollbar-color: #9fb09a #edf0e8;
 }
+.demoAccessLink {
+  margin-top: 18px;
+  max-width: 100%;
+  font-size: 14px;
+  color: #e0ecd8;
+}
 .mockApp {
   display: flex;
   min-width: 660px;
   height: 434px;
   background: #f6f8f6;
+  color: #243c35;
   font-size: 10px;
   line-height: 1.4;
 }
@@ -1669,10 +1632,174 @@
   line-height: 1.8;
 }
 
+/* --- individual configuration --- */
+.customSection {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(78px, 9vw, 132px) 0;
+  background:
+    radial-gradient(54% 60% at 82% 44%, rgba(111, 144, 104, 0.12), transparent 72%),
+    linear-gradient(180deg, #f7f4ed, #fbfaf6);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.customGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(540px, 1.22fr);
+  gap: clamp(38px, 6vw, 84px);
+  align-items: center;
+}
+.customIntro h2 {
+  margin-top: 18px;
+}
+.customIntro > p:not(.eyebrow) {
+  max-width: 500px;
+  color: #6f7d72;
+  font-size: 16px;
+  line-height: 1.9;
+  margin-top: 24px;
+}
+.customPromise {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 430px;
+  margin: 25px 0 22px;
+  padding: 15px 17px;
+  border-left: 3px solid var(--sage);
+  background: rgba(255, 255, 255, 0.68);
+  color: #496451;
+  font-size: 14px;
+  font-weight: 600;
+}
+.customPromise svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+.customStage {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(49, 92, 69, 0.16);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 34px 80px -54px rgba(23, 61, 45, 0.55);
+  backdrop-filter: blur(12px);
+}
+.customCore {
+  position: relative;
+  grid-column: 1 / -1;
+  display: flex;
+  min-height: 168px;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(199, 220, 181, 0.2), transparent 34%),
+    linear-gradient(145deg, #315c45, #173d2d);
+  color: #f4f6ee;
+  padding: 28px 30px;
+  overflow: hidden;
+}
+.customCore::after {
+  content: "C";
+  position: absolute;
+  right: -4px;
+  bottom: -42px;
+  color: rgba(255, 255, 255, 0.055);
+  font-size: 190px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.12em;
+}
+.customCore span {
+  color: #bfd3b5;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+.customCore strong {
+  margin-top: 14px;
+  font-size: clamp(25px, 3vw, 34px);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+.customCore small {
+  margin-top: 13px;
+  color: #cbd7c7;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.customNode {
+  position: relative;
+  display: flex;
+  min-height: 124px;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid rgba(49, 92, 69, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 18px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.customNode:hover {
+  border-color: rgba(49, 92, 69, 0.32);
+  background: #fff;
+}
+.customNode svg {
+  flex: 0 0 auto;
+  color: var(--green);
+  margin-top: 2px;
+}
+.customNode h3 {
+  color: #2b493a;
+  font-size: 14px;
+}
+.customNode p {
+  color: #778279;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+.customSteps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: clamp(44px, 6vw, 78px);
+  border-top: 1px solid #daddd5;
+  border-bottom: 1px solid #daddd5;
+}
+.customSteps article {
+  display: flex;
+  gap: 18px;
+  padding: 25px 28px;
+  border-right: 1px solid #daddd5;
+}
+.customSteps article:last-child {
+  border-right: 0;
+}
+.customSteps article > span {
+  color: var(--clay);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.customSteps h3 {
+  font-size: 16px;
+}
+.customSteps p {
+  color: #7b857d;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 5px;
+}
+
 /* --- pricing --- */
 .priceCards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1.2fr 1fr 1fr;
   gap: 18px;
 }
 .priceCard {
@@ -1689,7 +1816,6 @@
     border-color 0.35s;
 }
 .priceCard:hover {
-  transform: translateY(-6px);
   box-shadow: var(--shadow-md);
 }
 .ownPrice:hover {
@@ -1703,24 +1829,26 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 .saleBadge {
   display: inline-flex;
   align-items: center;
   padding: 3px 8px;
   border-radius: 20px;
-  background: var(--clay, #b0623d);
-  color: #fff;
+  background: rgba(219, 235, 202, 0.12);
+  border: 1px solid rgba(219, 235, 202, 0.3);
+  color: #dbeaca;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
 }
 .priceWas {
-  color: #94a08a;
+  color: #a7baa9;
   font-weight: 400;
   font-size: 0.55em;
   text-decoration: line-through;
-  text-decoration-color: var(--clay, #b0623d);
+  text-decoration-color: currentColor;
   margin-right: 0.2em;
 }
 .priceCard h3 {
@@ -1731,9 +1859,10 @@
   font-size: 30px;
   font-weight: 600;
   letter-spacing: -0.045em;
-  margin-top: 20px;
-  margin-bottom: 14px;
   line-height: 1.35;
+}
+.priceCard .priceValue {
+  margin-block: 22px 16px;
 }
 .priceValue small {
   font-size: 15px;
@@ -1769,16 +1898,42 @@
   margin-top: auto;
 }
 .ownPrice {
-  background: linear-gradient(165deg, #eef3e6, #e6eedd);
-  border-color: #9caf87;
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(145deg, #294d3c, #173c2d);
+  border-color: #315c45;
+  color: #f6f8f0;
+  box-shadow: 0 20px 50px -30px rgba(17, 52, 39, 0.6);
 }
 .ownPrice .priceValue {
-  font-size: 26px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 52px;
+  margin: 24px 0 16px;
+}
+.ownPrice .priceWas {
+  font-size: 22px;
+}
+.ownPrice .priceValue small {
+  flex-basis: 100%;
+  font-size: 13px;
+  margin-top: -12px;
+}
+.ownPrice > p:not(.priceValue),
+.ownPrice li,
+.ownPrice .priceLabel,
+.ownPrice .priceValue small {
+  color: #c2d3c1;
 }
 .ownPrice .primaryButton {
   width: 100%;
-  font-size: 15px;
+  font-size: 14px;
+  background: #e1ebd3;
+  color: #173c2d;
+  border-color: #e1ebd3;
+}
+.ownPrice .primaryButton:hover {
+  background: #f1f6e8;
 }
 .sourceLink {
   display: flex;
@@ -2257,6 +2412,16 @@
   .calculator {
     column-gap: 30px;
   }
+  .customGrid {
+    grid-template-columns: 1fr;
+  }
+  .customIntro {
+    max-width: 680px;
+  }
+  .customStage {
+    width: min(100%, 720px);
+    margin-inline: auto;
+  }
 }
 @media (max-width: 900px) {
   .sectionHead {
@@ -2374,6 +2539,16 @@
   .futureContent {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+  .customSteps {
+    grid-template-columns: 1fr;
+  }
+  .customSteps article {
+    border-right: 0;
+    border-bottom: 1px solid #daddd5;
+  }
+  .customSteps article:last-child {
+    border-bottom: 0;
   }
 }
 @media (max-width: 700px) {
@@ -2500,8 +2675,12 @@
   .section,
   .previewSection,
   .deviceSection,
-  .fitSection {
+  .fitSection,
+  .customSection {
     padding-block: 58px;
+  }
+  .customSection {
+    padding-top: 0;
   }
   .sectionHead {
     grid-template-columns: 1fr;
@@ -2568,6 +2747,12 @@
   .previewLayout {
     gap: 24px;
   }
+  .mockApp {
+    min-width: 530px;
+  }
+  .mockSidebar {
+    display: none;
+  }
   .previewExplanation {
     display: block;
   }
@@ -2615,6 +2800,43 @@
   .fitChecklist p {
     max-width: none;
   }
+  .customGrid {
+    gap: 34px;
+  }
+  .customIntro > p:not(.eyebrow) {
+    font-size: 15px;
+    margin-top: 18px;
+  }
+  .customPromise {
+    margin-block: 20px;
+  }
+  .customStage {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 18px;
+  }
+  .customCore {
+    min-height: 164px;
+    padding: 24px;
+  }
+  .customCore strong {
+    font-size: 23px;
+  }
+  .customNode,
+  .customNode[data-custom-index] {
+    width: 100%;
+    min-height: 0;
+  }
+  .customNode p {
+    font-size: 12px;
+  }
+  .customSteps {
+    margin-top: 36px;
+  }
+  .customSteps article {
+    padding: 20px 4px;
+  }
   .priceCards {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -2632,9 +2854,11 @@
   .priceCard h3 {
     font-size: 25px;
   }
-  .priceValue,
-  .ownPrice .priceValue {
+  .priceValue {
     font-size: 29px;
+  }
+  .ownPrice .priceValue {
+    font-size: 48px;
   }
   .priceCard > p:not(.priceValue) {
     min-height: auto;
@@ -2790,6 +3014,142 @@
   }
 }
 
+/* ========================= refined scroll motion ========================= */
+.site::before {
+  content: "";
+  position: fixed;
+  z-index: 120;
+  inset: 0 0 auto;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #78936d, #b8d29e 68%, #b0623d);
+  transform: scaleX(var(--page-progress, 0));
+  transform-origin: left center;
+  box-shadow: 0 0 18px rgba(111, 144, 104, 0.5);
+}
+.site::after {
+  content: "";
+  position: fixed;
+  z-index: 119;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    transparent 64%,
+    rgba(21, 59, 45, 0.025)
+  );
+}
+.site main > section[data-cinematic] {
+  --scene-progress: 0;
+  --scene-distance: 1;
+  --scene-visibility: 0;
+}
+.site main > section[data-cinematic] .sectionNum {
+  transform: translate3d(
+    0,
+    calc(var(--scene-distance) * 12px),
+    0
+  );
+  opacity: calc(0.75 + var(--scene-visibility) * 0.25);
+  transition: transform 0.12s linear, opacity 0.12s linear;
+}
+
+.hero[data-cinematic] .heroFrame {
+  transform: translate3d(0, calc(var(--scene-distance) * 10px), 0)
+    scale(calc(0.992 + var(--scene-visibility) * 0.008));
+  transition: transform 0.12s linear;
+}
+.hero[data-cinematic] .heroImage {
+  transform: translate3d(0, calc(var(--scene-progress) * -18px), 0)
+    scale(1.045);
+  transition: transform 0.12s linear;
+}
+.hero[data-cinematic] .heroArc {
+  transform: translate3d(
+    calc(var(--scene-distance) * 12px),
+    calc(var(--scene-distance) * -16px),
+    0
+  );
+  transition: transform 0.12s linear;
+}
+.hero[data-cinematic] .floatingCard {
+  transform: translate3d(
+    0,
+    calc(var(--scene-distance) * 12px),
+    0
+  );
+  transition: transform 0.12s linear;
+}
+
+.section[data-cinematic] .capabilities {
+  transform: translate3d(0, calc(var(--scene-distance) * 8px), 0);
+  transition: transform 0.12s linear;
+}
+
+.previewSection[data-cinematic] .previewAtmosphere {
+  transform: translate3d(
+      calc(var(--scene-distance) * 22px),
+      calc(var(--scene-distance) * -14px),
+      0
+    )
+    scale(1.05);
+  opacity: calc(0.78 + var(--scene-visibility) * 0.22);
+  transition: transform 0.12s linear, opacity 0.12s linear;
+}
+.previewSection[data-cinematic] .browserFrame {
+  transform: translate3d(0, calc(var(--scene-distance) * 14px), 0)
+    scale(calc(0.994 + var(--scene-visibility) * 0.006));
+  transition: transform 0.12s linear;
+}
+
+.section[data-cinematic] .steps::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 18px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: linear-gradient(var(--green), var(--clay));
+  transform: scaleY(var(--scene-progress));
+  transform-origin: top;
+  box-shadow: 0 0 12px rgba(111, 144, 104, 0.28);
+}
+
+.deviceSection[data-cinematic] .deviceCards article.revealVisible {
+  transform: translate3d(0, calc(var(--scene-distance) * 6px), 0);
+}
+.fitSection[data-cinematic]::before {
+  transform: translate3d(
+      calc(var(--scene-distance) * 26px),
+      calc(var(--scene-distance) * -12px),
+      0
+    )
+    scale(1.04);
+  transition: transform 0.12s linear;
+}
+.customSection[data-cinematic] .customCore {
+  transform: translate3d(0, calc(var(--scene-distance) * 8px), 0);
+  transition: transform 0.12s linear;
+}
+.customSection[data-cinematic] .customNode {
+  transform: translate3d(0, calc(var(--scene-distance) * 4px), 0);
+  transition: transform 0.12s linear, border-color 0.3s, background-color 0.3s;
+}
+.customSection[data-cinematic] .customNode:nth-child(even) {
+  transform: translate3d(0, calc(var(--scene-distance) * -4px), 0);
+}
+
+.section[data-cinematic] .priceCards,
+.section[data-cinematic] .calculator,
+.section[data-cinematic] .projectStory,
+.section[data-cinematic] .futureContent,
+.section[data-cinematic] .faqGrid,
+.section[data-cinematic] .contactSection {
+  transform: translate3d(0, calc(var(--scene-distance) * 7px), 0);
+  transition: transform 0.12s linear;
+}
+
 /* ========================= reduced motion ========================= */
 @media (prefers-reduced-motion: reduce) {
   .site *,
@@ -2814,5 +3174,16 @@
   }
   .browserFrame {
     transform: none !important;
+  }
+  .site main > section[data-cinematic],
+  .site main > section[data-cinematic] .customNode,
+  .site main > section[data-cinematic] .customSteps,
+  .site main > section[data-cinematic] .customCore {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .site::before,
+  .site::after {
+    display: none;
   }
 }

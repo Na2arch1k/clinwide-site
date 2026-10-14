@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -424,6 +424,9 @@ export function ProductPreview() {
         Ілюстрації можливостей системи. Це не робочі картки клієнтів; дані
         вигадані. На телефоні приклад можна прокрутити горизонтально.
       </p>
+      <a href="#contact" className={`${s.textButton} ${s.demoAccessLink}`}>
+        Для доступу до демо напишіть мені <ArrowUpRight size={16} />
+      </a>
     </div>
   );
 }
@@ -455,6 +458,7 @@ function useCountUp(target: number, duration = 420) {
           ? 1
           : Math.min(1, (now - start) / effectiveDuration);
       const value = from + (target - from) * easeOutCubic(progress);
+      fromRef.current = Math.round(value);
       setDisplayed(Math.round(value));
       if (progress < 1) {
         frame = requestAnimationFrame(tick);
@@ -553,10 +557,11 @@ export function CostExplorer() {
         <a href="#contact">
           <span>{BRAND.name} · базове рішення</span>
           <strong data-testid="clinwide-total">
-            <s className={s.priceWas}>${productOffer.compareAtUsd}</s> $
-            {productOffer.priceUsd} <ArrowRight size={21} />
+            ${productOffer.priceUsd}{" "}
+            <s className={s.priceWas}>${productOffer.compareAtUsd}</s>
+            <ArrowRight size={21} />
           </strong>
-          <small>Акційна ціна базового рішення · разовий платіж</small>
+          <small>Спеціальна ціна · разова оплата</small>
         </a>
       </div>
       <p className={s.calculatorFootnote}>
@@ -661,7 +666,7 @@ export function DemoRequest({ contactUrl }: { contactUrl?: string }) {
           target="_blank"
           rel="noreferrer"
         >
-          Зв’язатися з автором <ArrowUpRight size={16} />
+          Написати щодо демо <ArrowUpRight size={16} />
         </a>
       ) : (
         <p className={s.requestHint}>
@@ -684,12 +689,18 @@ function FaqItem({
   answer: string;
 }) {
   const [open, setOpen] = useState(false);
+  const answerId = useId();
   const innerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
-    if (!innerRef.current) return;
-    setHeight(open ? innerRef.current.scrollHeight : 0);
+    const content = innerRef.current;
+    if (!content) return;
+    const measure = () => setHeight(open ? content.scrollHeight : 0);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(content);
+    return () => observer.disconnect();
   }, [open]);
 
   return (
@@ -698,12 +709,13 @@ function FaqItem({
         type="button"
         className={`${s.faqButton} ${open ? s.faqOpen : ""}`}
         aria-expanded={open}
+        aria-controls={answerId}
         onClick={() => setOpen((v) => !v)}
       >
         {question}
         <span aria-hidden="true">+</span>
       </button>
-      <div className={s.faqAnswerWrap} style={{ height }}>
+      <div id={answerId} className={s.faqAnswerWrap} style={{ height }} aria-hidden={!open}>
         <div ref={innerRef}>
           <p>{answer}</p>
         </div>
